@@ -45,9 +45,9 @@ All rights reserved. Code is for demonstration only. Using, copying, or redistri
 🏢 Contact
 
 Company: Konalexon
-Project owner: [your name or company link]
+Project owner: [SpartaKoli]
 
-For business inquiries, contact: info@konalexon.com
+For business inquiries, contact: konalinio@gmail.com
 📢 Status
 
     In development
