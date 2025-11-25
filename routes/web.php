@@ -19,14 +19,29 @@ use App\Http\Controllers\CatalogController;
 
 use App\Http\Controllers\LiveController;
 
-Route::get('/live', [LiveController::class, 'index']);
-Route::get('/live/status', [LiveController::class, 'status']);
+// Live Stream Routes
+// Chat Routes
+use App\Http\Controllers\ChatController;
 
-// Admin Chat Routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+});
+
+// Admin Live Control Routes
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::post('/live/pin', [LiveController::class, 'pinMessage']);
-    Route::post('/live/ban', [LiveController::class, 'banUser']);
+    Route::post('/live/start', [LiveController::class, 'startStream']);
+    Route::post('/live/stop', [LiveController::class, 'stopStream']);
+    Route::post('/live/auction/start', [LiveController::class, 'startAuction']);
+
+    // Chat Moderation
+    Route::post('/live/pin', [ChatController::class, 'pinMessage']);
+    Route::post('/live/ban', [ChatController::class, 'banUser']);
     Route::post('/live/unban', [LiveController::class, 'unbanUser']);
+});
+
+// User Interaction Routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/live/bid', [LiveController::class, 'placeBid']);
 });
 
 use App\Http\Controllers\CartController;
@@ -83,10 +98,13 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // User Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
-Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->middleware('auth')->name('dashboard.orders');
-Route::get('/dashboard/settings', [DashboardController::class, 'settings'])->middleware('auth')->name('dashboard.settings');
-Route::post('/dashboard/settings', [DashboardController::class, 'updateSettings'])->middleware('auth')->name('dashboard.settings.update');
+use App\Http\Controllers\ProfileController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [ProfileController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/dashboard/address', [ProfileController::class, 'updateAddress'])->name('profile.address');
+});
 
 use App\Http\Controllers\WishlistController;
 Route::get('/wishlist', [WishlistController::class, 'index'])->middleware('auth')->name('wishlist.index');

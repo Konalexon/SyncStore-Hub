@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -25,42 +27,47 @@ class PaymentController extends Controller
 
     public function process(Request $request)
     {
-        // Simulate Payment Processing
-        // In a real app, this would interact with Stripe/PayPal API
+        // Simulate Payment Processing Delay
+        sleep(2);
 
-        $cart = session()->get('cart');
-        if (!$cart) {
+        // Create Order
+        $order = DB::transaction(function () {
+            $cart = session()->get('cart');
+            if (!$cart)
+                return null;
+
+            $total = 0;
+            foreach ($cart as $item) {
+                $total += $item['price'] * $item['quantity'];
+            }
+
+            $order = Order::create([
+                'user_id' => Auth::id() ?? 1, // Fallback for testing
+                'total_amount' => $total,
+                'status' => 'completed',
+                'payment_method' => 'credit_card_simulated'
+            ]);
+
+            // Create Order Items
+            foreach ($cart as $id => $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $id,
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price']
+                ]);
+            }
+
+            return $order;
+        });
+
+        if (!$order) {
             return redirect()->route('cart.index')->with('error', 'Cart is empty!');
         }
 
-        $total = 0;
-        foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
-        }
-
-        // Create Order
-        $userId = auth()->id() ?? 1; // Fallback to Admin for testing if not logged in
-
-        $order = Order::create([
-            'user_id' => $userId,
-            'total_amount' => $total,
-            'status' => 'completed' // Paid
-        ]);
-
-        // Create Order Items
-        foreach ($cart as $id => $item) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $id,
-                'quantity' => $item['quantity'],
-                'price' => $item['price']
-            ]);
-        }
-
-        // Clear Cart
         session()->forget('cart');
 
-        return redirect()->route('payment.success')->with('success', 'Payment successful!');
+        return redirect()->route('payment.success')->with('order_id', $order->id);
     }
 
     public function success()

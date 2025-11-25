@@ -126,4 +126,81 @@
                     }
                     }
                     </style>
+                    <script type="module">
+                        import { StreamReceiver } from '/resources/js/stream-simulation.js';
+
+                        const canvas = document.getElementById('streamCanvas');
+                        const loading = document.getElementById('videoPlaceholder');
+                        const viewerCount = document.getElementById('viewerCount');
+
+                        // Initialize Stream Receiver
+                        StreamReceiver.init(canvas, loading);
+
+                        // Polling for Status Updates (Viewer Count, Auction Status)
+                        setInterval(async () => {
+                            try {
+                                const response = await axios.get('/live/status');
+                                const data = response.data;
+
+                                // Update Viewer Count (Simulated)
+                                viewerCount.innerText = Math.floor(Math.random() * 50) + 10;
+
+                                // Update Auction Info if active
+                                if (data.product) {
+                                    const currentBidEl = document.getElementById('currentBid');
+                                    if (currentBidEl) {
+                                        currentBidEl.innerText = '$' + parseFloat(data.product.price).toFixed(2);
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('Status poll error', error);
+                            }
+                        }, 3000);
+
+                        // Bid Logic
+                        window.placeBid = async function () {
+                            try {
+                                const response = await axios.post('/live/bid');
+                                if (response.data.success) {
+                                    // Update UI immediately for better UX
+                                    const currentBidEl = document.getElementById('currentBid');
+                                    if (currentBidEl) {
+                                        currentBidEl.innerText = '$' + parseFloat(response.data.new_price).toFixed(2);
+                                    }
+
+                                    // Show success toast/notification (simplified)
+                                    const btn = document.querySelector('button[onclick="placeBid()"]');
+                                    const originalText = btn.innerHTML;
+                                    btn.innerHTML = '<span class="text-white">BID PLACED!</span>';
+                                    btn.classList.remove('btn-success');
+                                    btn.classList.add('btn-warning');
+
+                                    setTimeout(() => {
+                                        btn.innerHTML = originalText;
+                                        btn.classList.add('btn-success');
+                                        btn.classList.remove('btn-warning');
+                                    }, 1000);
+                                } else {
+                                    alert(response.data.message || 'Failed to place bid');
+                                }
+                            } catch (error) {
+                                if (error.response && error.response.status === 401) {
+                                    window.location.href = '/login';
+                                } else {
+                                    alert('Error placing bid');
+                                }
+                            }
+                        };
+
+                        // Add to Cart Logic
+                        window.addToCart = async function (id) {
+                            try {
+                                const response = await axios.post(`/cart/add/${id}`);
+                                // Simple toast or reload
+                                window.location.reload();
+                            } catch (error) {
+                                alert('Error adding to cart');
+                            }
+                        };
+                    </script>
 @endsection

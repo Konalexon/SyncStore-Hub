@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\LiveStream;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LiveController extends Controller
 {
@@ -25,8 +27,64 @@ class LiveController extends Controller
         return response()->json([
             'is_active' => $stream ? $stream->is_active : false,
             'product_id' => $stream ? $stream->product_id : null,
+            'product' => $stream && $stream->product ? $stream->product : null,
             'pinned_message' => $stream ? $stream->pinned_message : null,
             'is_banned' => $user ? $user->is_banned : false,
+        ]);
+    }
+
+    public function startStream(Request $request)
+    {
+        $stream = LiveStream::first();
+        if (!$stream) {
+            $stream = LiveStream::create(['title' => 'Main Stream', 'is_active' => true]);
+        } else {
+            $stream->update(['is_active' => true]);
+        }
+        return response()->json(['success' => true]);
+    }
+
+    public function stopStream(Request $request)
+    {
+        $stream = LiveStream::first();
+        if ($stream) {
+            $stream->update(['is_active' => false]);
+        }
+        return response()->json(['success' => true]);
+    }
+
+    public function startAuction(Request $request)
+    {
+        $stream = LiveStream::first();
+        if ($stream) {
+            $stream->update([
+                'product_id' => $request->product_id,
+                // In a real app, we'd store auction end time etc.
+            ]);
+        }
+        return response()->json(['success' => true]);
+    }
+
+    public function placeBid(Request $request)
+    {
+        $user = Auth::user();
+        $stream = LiveStream::first();
+
+        if (!$stream || !$stream->product) {
+            return response()->json(['success' => false, 'message' => 'No active auction']);
+        }
+
+        $product = $stream->product;
+        $currentPrice = $product->price;
+        $newPrice = $currentPrice + 10; // Fixed bid increment for now
+
+        // Update product price (simplified auction logic)
+        $product->update(['price' => $newPrice]);
+
+        return response()->json([
+            'success' => true,
+            'new_price' => $newPrice,
+            'user' => $user->name
         ]);
     }
 

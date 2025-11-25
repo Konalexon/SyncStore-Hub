@@ -1,19 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container py-5 text-center">
-        <div class="card border-0 shadow-sm mx-auto" style="max-width: 500px;">
-            <div class="card-body p-5">
-                <div class="mb-4 text-success">
-                    <i class="bi bi-check-circle-fill display-1"></i>
+    <div class="container py-5">
+        <div class="text-center">
+            <div class="mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle"
+                    style="width: 100px; height: 100px;">
+                    <i class="bi bi-check-lg display-3"></i>
                 </div>
-                <h2 class="fw-bold mb-3">Payment Successful!</h2>
-                <p class="text-muted mb-4">Thank you for your purchase. Your order has been placed successfully.</p>
+            </div>
+            <h1 class="fw-bold mb-3">Payment Successful!</h1>
+            <p class="text-muted lead mb-5">Thank you for your purchase. Your order has been confirmed.</p>
 
-                <div class="d-grid gap-2">
-                    <a href="{{ route('dashboard.orders') }}" class="btn btn-primary">View My Orders</a>
-                    <a href="{{ url('/') }}" class="btn btn-outline-secondary">Continue Shopping</a>
-                </div>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ route('dashboard') }}" class="btn btn-outline-primary px-4 rounded-pill">View Order</a>
+                <a href="/" class="btn btn-primary px-4 rounded-pill">Continue Shopping</a>
             </div>
         </div>
     </div>
