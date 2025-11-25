@@ -1,0 +1,388 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+// Variables
+$primary: #FF5722; // Orange
+$secondary: #6c757d;
+$success: #28a745;
+$info: #17a2b8;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #1A1A1A; // Dark Grey
+$body-bg: #f8f9fa;
+$body-color: #333;
+$font-family-sans-serif: 'Inter', sans-serif;
+
+// Bootstrap Overrides
+$theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary,
+    "success": $success,
+    "info": $info,
+    "warning": $warning,
+    "danger": $danger,
+    "light": $light,
+    "dark": $dark
+);
+
+$border-radius: 0.5rem;
+$btn-border-radius: 0.5rem;
+$card-border-radius: 0.75rem;
+
+@import "~bootstrap/scss/bootstrap";
+
+// Custom Styles
+
+body {
+    background-color: $body-bg;
+    color: $body-color;
+    -webkit-font-smoothing: antialiased;
+}
+
+// Navbar
+.navbar {
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 1rem 0;
+
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: $dark;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+            color: $primary;
+        }
+    }
+
+    .nav-link {
+        font-weight: 500;
+        color: $secondary;
+        transition: color 0.2s;
+
+        &:hover,
+        &.active {
+            color: $primary;
+        }
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, $primary, lighten($primary, 10%));
+        border: none;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba($primary, 0.3);
+        transition: transform 0.2s, box-shadow 0.2s;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba($primary, 0.4);
+        }
+    }
+}
+
+// Hero Section
+.hero-section {
+    padding: 5rem 0;
+    background: #fff;
+    
+    h1 {
+        font-weight: 800;
+        font-size: 3.5rem;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        
+        span {
+            color: $primary;
+        }
+    }
+
+    p {
+        font-size: 1.2rem;
+        color: $secondary;
+        margin-bottom: 2rem;
+    }
+
+    .hero-image {
+        border-radius: 1rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    }
+}
+
+// Features
+.feature-card {
+    padding: 2rem;
+    border-radius: 1rem;
+    background: #fff;
+    transition: transform 0.3s;
+    height: 100%;
+    border: 1px solid rgba(0,0,0,0.05);
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba($primary, 0.1);
+        color: $primary;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    h3 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        color: $secondary;
+        margin-bottom: 0;
+    }
+}
+
+// Product Card
+.card-product {
+    border: none;
+    background: #fff;
+    border-radius: $card-border-radius;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+    position: relative;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+
+        .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        .add-to-cart-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .img-wrapper {
+        overflow: hidden;
+        position: relative;
+        padding-top: 100%; // 1:1 Aspect Ratio
+        background: #f8f9fa;
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 2rem;
+            transition: transform 0.5s;
+        }
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .price {
+        font-weight: 700;
+        color: $primary;
+        font-size: 1.2rem;
+    }
+
+    .add-to-cart-btn {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        background: $primary;
+        color: #fff;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s;
+        cursor: pointer;
+        z-index: 2;
+
+        &:hover {
+            background: darken($primary, 10%);
+        }
+    }
+}
+
+// Live Shop
+.live-stream-container {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    background: #000;
+    aspect-ratio: 16/9;
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .live-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: $danger;
+        color: #fff;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            display: block;
+            animation: pulse 1.5s infinite;
+        }
+    }
+
+    .product-overlay {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 1rem;
+        padding: 1rem;
+        width: 280px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        animation: slideInRight 0.5s;
+
+        h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .timer {
+            background: $danger;
+            color: #fff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+    }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+// Footer
+.footer {
+    background: $dark;
+    color: #fff;
+    padding: 4rem 0 2rem;
+    margin-top: 5rem;
+
+    h5 {
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #fff;
+    }
+
+    ul {
+        padding: 0;
+        list-style: none;
+
+        li {
+            margin-bottom: 0.75rem;
+
+            a {
+                color: rgba(255,255,255,0.6);
+                text-decoration: none;
+                transition: color 0.2s;
+
+                &:hover {
+                    color: $primary;
+                }
+            }
+        }
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1rem;
+
+        a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: background 0.2s;
+
+            &:hover {
+                background: $primary;
+            }
+        }
+    }
+
+    .copyright {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 3rem;
+        padding-top: 2rem;
+        text-align: center;
+        color: rgba(255,255,255,0.4);
+        font-size: 0.9rem;
+    }
+}
