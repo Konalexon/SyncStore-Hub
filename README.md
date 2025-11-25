@@ -1,59 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SyncStore-Hub 🛒🎥
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**SyncStore-Hub** is a next-generation e-commerce platform that blends traditional online shopping with the excitement of **Live Commerce**. It features a real-time video shopping experience, dynamic bidding, and an AI-powered admin panel.
 
-## About Laravel
+![Live Shop Experience](file:///C:/Users/konal/.gemini/antigravity/brain/795c4926-64bd-444d-81f3-7b4de33e180c/live_page_fixed_1764028113701.png)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Key Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🔴 Live Shopping Experience
+- **Real-Time Streaming**: Simulated high-quality video stream (120 FPS, 720p) using `BroadcastChannel` for low-latency local broadcasting.
+- **Interactive Overlay**: Glassmorphism-style product cards that appear during the stream.
+- **Live Bidding**: Users can place bids in real-time with dynamic price updates.
+- **Auction Timer**: Synchronized countdown timer for limited-time offers.
+- **Live Chat**: Real-time chat for user engagement (simulated).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🛠️ Admin Command Center
+- **Live Dashboard**: Dedicated control panel to manage the stream, toggle webcam, and push products to the live feed.
+- **Active Product Tracking**: See exactly what users are seeing with a synchronized "Currently Auctioning" display.
+- **Magic AI Tools**:
+    - **Auto-Description**: Generates compelling product descriptions based on name and category.
+    - **Smart Pricing**: Suggests prices based on product tier (e.g., "Pro" adds value).
+    - **Auto-Image**: Fetches relevant high-quality images from Unsplash automatically.
 
-## Learning Laravel
+### 🛍️ Modern E-Commerce
+- **Dynamic Catalog**: Filterable product grid with category and price range controls.
+- **Cart System**: Fully functional cart with "Add to Cart" animations.
+- **Responsive Design**: Built with Bootstrap 5 and custom CSS for a premium, mobile-friendly look.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 📸 Screenshots
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Admin Live Dashboard | Catalog View |
+|:--------------------:|:------------:|
+| ![Admin Dashboard](file:///C:/Users/konal/.gemini/antigravity/brain/795c4926-64bd-444d-81f3-7b4de33e180c/admin_live_active_product_retry_1764027636987.png) | ![Catalog](file:///C:/Users/konal/.gemini/antigravity/brain/795c4926-64bd-444d-81f3-7b4de33e180c/catalog_verified_final_1764019789271.png) |
 
-## Laravel Sponsors
+## 💻 Tech Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Framework**: [Laravel 12](https://laravel.com) (PHP 8.2+)
+- **Frontend**: Blade Templates, Bootstrap 5, Vanilla JavaScript
+- **Database**: SQLite (Default) / MySQL compatible
+- **Real-Time**: HTML5 `BroadcastChannel` API, Web Workers
 
-### Premium Partners
+## 🛠️ Installation
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/yourusername/SyncStore-Hub.git
+    cd SyncStore-Hub
+    ```
 
-## Contributing
+2.  **Install Dependencies**
+    ```bash
+    composer install
+    npm install
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3.  **Environment Setup**
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
 
-## Code of Conduct
+4.  **Database Setup**
+    ```bash
+    touch database/database.sqlite
+    php artisan migrate --seed
+    ```
+    *Or use the `/fix-data` route to auto-seed the database.*
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5.  **Build Assets**
+    ```bash
+    npm run build
+    ```
 
-## Security Vulnerabilities
+6.  **Run the Application**
+    ```bash
+    php artisan serve
+    ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🌟 Usage
 
-## License
+1.  **Access the Store**: Go to `http://localhost:8000`.
+2.  **Admin Panel**: Log in at `/login` (Default: `admin@syncstore.com` / `password`).
+3.  **Start a Stream**:
+    - Go to **Admin > Live Stream**.
+    - Allow Camera Access.
+    - Select a product and click **Go Live**.
+4.  **Watch Live**: Open `/live` in a separate tab/window to see the stream and overlay in action.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+*Built with ❤️ by the SyncStore Team.*
