@@ -44,10 +44,29 @@ class CartController extends Controller
     {
         if ($request->id && $request->quantity) {
             $cart = session()->get('cart');
-            $cart[$request->id]["quantity"] = $request->quantity;
-            session()->put('cart', $cart);
-            session()->flash('success', 'Cart updated successfully');
+
+            if (isset($cart[$request->id])) {
+                $cart[$request->id]["quantity"] = $request->quantity;
+                session()->put('cart', $cart);
+
+                // Calculate new totals
+                $total = 0;
+                $quantity = 0;
+                foreach ($cart as $item) {
+                    $total += $item['price'] * $item['quantity'];
+                    $quantity += $item['quantity'];
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'total' => $total,
+                    'cart_count' => $quantity,
+                    'item_total' => $cart[$request->id]['price'] * $request->quantity
+                ]);
+            }
         }
+
+        return response()->json(['success' => false], 400);
     }
 
     // Remove Item
@@ -59,7 +78,20 @@ class CartController extends Controller
                 unset($cart[$request->id]);
                 session()->put('cart', $cart);
             }
-            session()->flash('success', 'Product removed successfully');
+
+            // Calculate new totals
+            $total = 0;
+            $quantity = 0;
+            foreach ($cart as $item) {
+                $total += $item['price'] * $item['quantity'];
+                $quantity += $item['quantity'];
+            }
+
+            return response()->json([
+                'success' => true,
+                'total' => $total,
+                'cart_count' => $quantity
+            ]);
         }
     }
 

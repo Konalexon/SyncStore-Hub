@@ -21,8 +21,9 @@
 
         <div class="row g-4 text-center py-5">
             <div class="col-md-4">
-                <div class="p-4">
-                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3 mb-3">
+                <div class="p-4 h-100 border-0 shadow-sm rounded-4">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                        style="width: 80px; height: 80px;">
                         <i class="bi bi-lightning-charge fs-2"></i>
                     </div>
                     <h4 class="fw-bold">Fast & Reliable</h4>
@@ -31,8 +32,9 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-4">
-                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3 mb-3">
+                <div class="p-4 h-100 border-0 shadow-sm rounded-4">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                        style="width: 80px; height: 80px;">
                         <i class="bi bi-shield-check fs-2"></i>
                     </div>
                     <h4 class="fw-bold">Secure</h4>
@@ -41,8 +43,9 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-4">
-                    <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex p-3 mb-3">
+                <div class="p-4 h-100 border-0 shadow-sm rounded-4">
+                    <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                        style="width: 80px; height: 80px;">
                         <i class="bi bi-heart fs-2"></i>
                     </div>
                     <h4 class="fw-bold">Customer First</h4>

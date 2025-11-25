@@ -1,310 +1,226 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Live Stream Control Center</h2>
-        <a href="{{ url('/admin/dashboard') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Dashboard
-        </a>
+    <div class="container-fluid py-4">
+        <div class="row g-4">
+            <!-- Left Column: Stream & Webcam -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                    <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-camera-video me-2"></i>Live Stream Preview</h5>
+                        <span class="badge bg-danger animate-pulse d-none" id="liveIndicator">LIVE</span>
+                    </div>
+                    <div class="card-body p-0 bg-black position-relative" style="height: 500px;">
+                        <!-- Webcam Video -->
+                        <video id="webcamVideo" autoplay playsinline muted
+                            class="w-100 h-100 object-fit-cover d-none"></video>
+
+                        <!-- Placeholder -->
+                        <div id="webcamPlaceholder"
+                            class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white-50">
+                            <i class="bi bi-camera-video-off display-1 mb-3"></i>
+                            <h4>Stream is Offline</h4>
+                            <p>Click "Go Live" to start streaming.</p>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex gap-2">
+                                <button id="startStreamBtn" class="btn btn-success rounded-pill px-4 fw-bold">
+                                    <i class="bi bi-broadcast me-2"></i>Go Live
+                                </button>
+                                <button id="stopStreamBtn" class="btn btn-danger rounded-pill px-4 fw-bold d-none">
+                                    <i class="bi bi-stop-circle me-2"></i>Stop Stream
+                                </button>
+                            </div>
+                            <div class="text-muted small">
+                                <i class="bi bi-eye me-1"></i> <span id="viewerCount">0</span> Viewers
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auction Controls -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-white p-3 border-bottom-0">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-hammer me-2"></i>Auction Controls</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Select Product to Auction</label>
+                                <select class="form-select form-select-lg" id="productSelect">
+                                    <option selected disabled>Choose a product...</option>
+                                    @foreach($products as $product)
+                                        <option value="{{ $product->id }}" data-image="{{ $product->image }}"
+                                            data-price="{{ $product->price }}">
+                                            {{ $product->name }} (${{ $product->price }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Auction Duration</label>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary flex-grow-1" onclick="setTimer(30)">30s</button>
+                                    <button class="btn btn-outline-primary flex-grow-1" onclick="setTimer(60)">1m</button>
+                                    <button class="btn btn-outline-primary flex-grow-1" onclick="setTimer(120)">2m</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-light rounded-3 d-none" id="activeAuctionPanel">
+                            <div class="d-flex align-items-center gap-3">
+                                <img id="auctionImage" src="" class="rounded" width="60" height="60">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-bold" id="auctionTitle">Product Name</h6>
+                                    <div class="text-primary fw-bold" id="auctionPrice">$0.00</div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="display-6 fw-bold text-danger" id="auctionTimer">00:00</div>
+                                    <button class="btn btn-sm btn-danger" onclick="stopAuction()">End Auction</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Chat & Moderation -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-white p-3 border-bottom-0 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-chat-dots me-2"></i>Live Chat</h5>
+                        <span class="badge bg-light text-dark border">Moderation Mode</span>
+                    </div>
+                    <div class="card-body p-0 d-flex flex-column" style="height: 600px;">
+                        <div id="chatBox" class="flex-grow-1 p-3 overflow-auto bg-light">
+                            <!-- Chat messages will appear here -->
+                            <div class="text-center text-muted mt-5">
+                                <i class="bi bi-chat-square-text fs-1 opacity-25"></i>
+                                <p class="mt-2 small">Chat is empty</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-white border-top">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Type a message as Admin..."
+                                    id="adminChatInput">
+                                <button class="btn btn-primary" onclick="sendAdminMessage()">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="row g-4">
-        <!-- Main Control Panel -->
-        <div class="col-lg-8">
-            <!-- Stream Status & Preview -->
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0">Stream Status</h5>
-                        @if($stream && $stream->is_active)
-                            <span class="badge bg-success px-3 py-2">ONLINE</span>
-                        @else
-                            <span class="badge bg-secondary px-3 py-2">OFFLINE</span>
-                        @endif
-                    </div>
+    <style>
+        .animate-pulse {
+            animation: pulse 1.5s infinite;
+        }
 
-                    <div class="bg-black rounded ratio ratio-16x9 mb-3 overflow-hidden position-relative">
-                        <video id="adminWebcam" class="w-100 h-100 object-fit-cover" autoplay playsinline muted></video>
-                        <div class="position-absolute top-50 start-50 translate-middle text-center text-white" <div
-                            class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
-                            <span>Auction Controls</span>
-                            <span class="badge bg-warning text-dark font-monospace fs-6" id="adminTimer">00:45</span>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <button class="btn btn-outline-primary w-100" onclick="updateTimer(30)">
-                                        <i class="bi bi-stopwatch me-1"></i> Extend +30s
-                                    </button>
-                                </div>
-                                <div class="col-md-4">
-                                    <button class="btn btn-outline-warning w-100" onclick="resetTimer()">
-                                        <i class="bi bi-arrow-clockwise me-1"></i> Reset Timer
-                                    </button>
-                                </div>
-                                <div class="col-md-4">
-                                    <button class="btn btn-outline-danger w-100" onclick="endAuction()">
-                                        <i class="bi bi-hammer me-1"></i> End Auction
-                                    </button>
-                                    @extends('layouts.app')
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
 
-                                    @section('content')
-                                                        <div class="container py-5">
-                                                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                                                <h2 class="fw-bold">Live Stream Control Center</h2>
-                                                                <a href="{{ url('/admin/dashboard') }}" class="btn btn-outline-secondary">
-                                                                    <i class="bi bi-arrow-left"></i> Back to Dashboard
-                                                                </a>
-                                                            </div>
+            50% {
+                opacity: 0.5;
+            }
 
-                                                            <div class="row g-4">
-                                                                <!-- Main Control Panel -->
-                                                                <div class="col-lg-8">
-                                                                    <!-- Stream Status & Preview -->
-                                                                    <div class="card border-0 shadow-sm mb-4">
-                                                                        <div class="card-body">
-                                                                            <div
-                                                                                class="d-flex justify-content-between align-items-center mb-3">
-                                                                                <h5 class="fw-bold mb-0">Stream Status</h5>
-                                                                                @if($stream && $stream->is_active)
-                                                                                    <span class="badge bg-success px-3 py-2">ONLINE</span>
-                                                                                @else
-                                                                                    <span class="badge bg-secondary px-3 py-2">OFFLINE</span>
-                                                                                @endif
-                                                                            </div>
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
 
-                                                                            <div
-                                                                                class="bg-black rounded ratio ratio-16x9 mb-3 overflow-hidden position-relative">
-                                                                                <video id="adminWebcam" class="w-100 h-100 object-fit-cover"
-                                                                                    autoplay playsinline muted></video>
-                                                                                <div class="position-absolute top-50 start-50 translate-middle text-center text-white"
-                                                                                    <div
-                                                                                    class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
-                                                                                    <span>Auction Controls</span>
-                                                                                    <span
-                                                                                        class="badge bg-warning text-dark font-monospace fs-6"
-                                                                                        id="adminTimer">00:45</span>
-                                                                                </div>
-                                                                                <div class="card-body">
-                                                                                    <div class="row g-3">
-                                                                                        <div class="col-md-4">
-                                                                                            <button class="btn btn-outline-primary w-100"
-                                                                                                onclick="updateTimer(30)">
-                                                                                                <i class="bi bi-stopwatch me-1"></i> Extend
-                                                                                                +30s
-                                                                                            </button>
-                                                                                        </div>
-                                                                                        <div class="col-md-4">
-                                                                                            <button class="btn btn-outline-warning w-100"
-                                                                                                onclick="resetTimer()">
-                                                                                                <i class="bi bi-arrow-clockwise me-1"></i>
-                                                                                                Reset Timer
-                                                                                            </button>
-                                                                                        </div>
-                                                                                        <div class="col-md-4">
-                                                                                            <button class="btn btn-outline-danger w-100"
-                                                                                                onclick="endAuction()">
-                                                                                                <i class="bi bi-hammer me-1"></i> End
-                                                                                                Auction
-                                                                                            </button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
+    <script type="module">
+        // Webcam Logic
+        const video = document.getElementById('webcamVideo');
+        const placeholder = document.getElementById('webcamPlaceholder');
+        const startBtn = document.getElementById('startStreamBtn');
+        const stopBtn = document.getElementById('stopStreamBtn');
+        const liveIndicator = document.getElementById('liveIndicator');
 
-                                                                        <!-- Chat Moderation -->
-                                                                        <div class="col-lg-4">
-                                                                            <div class="card border-0 shadow-sm h-100">
-                                                                                <div
-                                                                                    class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
-                                                                                    <span>Live Chat</span>
-                                                                                    <span class="badge bg-primary">Mod View</span>
-                                                                                </div>
+        startBtn.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                video.srcObject = stream;
+                video.classList.remove('d-none');
+                placeholder.classList.add('d-none');
+                startBtn.classList.add('d-none');
+                stopBtn.classList.remove('d-none');
+                liveIndicator.classList.remove('d-none');
 
-                                                                                <!-- Pinned Message Control -->
-                                                                                <div class="p-2 border-bottom bg-light">
-                                                                                    <div class="input-group input-group-sm">
-                                                                                        <span class="input-group-text"><i
-                                                                                                class="bi bi-pin-angle-fill"></i></span>
-                                                                                        <input type="text" class="form-control"
-                                                                                            id="pinnedMessageInput"
-                                                                                            placeholder="Set pinned message...">
-                                                                                        <button class="btn btn-outline-primary"
-                                                                                            onclick="setPinnedMessage()">Set</button>
-                                                                                    </div>
-                                                                                </div>
+                // Notify server
+                axios.post('/live/start');
+            } catch (err) {
+                alert('Error accessing webcam: ' + err.message);
+            }
+        });
 
-                                                                                <div class="card-body overflow-auto" style="height: 400px;"
-                                                                                    id="adminChatBox">
-                                                                                    <div class="text-center text-muted mt-5">
-                                                                                        <i class="bi bi-chat-square-text fs-1 mb-2"></i>
-                                                                                        <p>Waiting for messages...</p>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="card-footer bg-white">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" class="form-control"
-                                                                                            placeholder="Post as Admin..."
-                                                                                            id="adminChatInput">
-                                                                                        <button class="btn btn-primary" type="button"
-                                                                                            onclick="sendAdminMessage()">Send</button>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+        stopBtn.addEventListener('click', () => {
+            const stream = video.srcObject;
+            const tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+            video.srcObject = null;
 
-                                                                <script>
-                                                                    let auctionTimeLeft = 45;
-                                                                    let timerInterval;
+            video.classList.add('d-none');
+            placeholder.classList.remove('d-none');
+            startBtn.classList.remove('d-none');
+            stopBtn.classList.add('d-none');
+            liveIndicator.classList.add('d-none');
 
-                                                                    document.addEventListener('DOMContentLoaded', function () {
-                                                                        const video = document.getElementById('adminWebcam');
-                                                                        const placeholder = document.getElementById('webcamPlaceholder'); // Note: This ID might be missing in HTML, need to check
-                                                                        const broadcastChannel = new BroadcastChannel('live_stream_channel');
-                                                                        const canvas = document.createElement('canvas');
-                                                                        const ctx = canvas.getContext('2d');
+            // Notify server
+            axios.post('/live/stop');
+        });
 
-                                                                        // Start Admin Timer
-                                                                        startAdminTimer();
+        // Auction Logic
+        window.setTimer = function (seconds) {
+            const productSelect = document.getElementById('productSelect');
+            const selectedOption = productSelect.options[productSelect.selectedIndex];
 
-                                                                        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                                                                            navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } }) // Request HD
-                                                                                .then(function (stream) {
-                                                                                    video.srcObject = stream;
-                                                                                    video.play();
-                                                                                    // placeholder.classList.add('d-none'); // Placeholder logic seems broken in previous view, ignoring for now
+            if (selectedOption.disabled) {
+                alert('Please select a product first.');
+                return;
+            }
 
-                                                                                    // Web Worker to handle timing (prevents background tab throttling)
-                                                                                    const blob = new Blob([`
-                                                                        self.onmessage = function(e) {
-                                                                            setInterval(() => {
-                                                                                self.postMessage('tick');
-                                                                            }, 1000 / 120); // 120 FPS
-                                                                        };
-                                                                    `], { type: 'application/javascript' });
-                                                                                    const worker = new Worker(URL.createObjectURL(blob));
+            const product = {
+                id: productSelect.value,
+                name: selectedOption.text.split(' ($')[0],
+                price: selectedOption.getAttribute('data-price'),
+                image: selectedOption.getAttribute('data-image')
+            };
 
-                                                                                    worker.onmessage = function (e) {
-                                                                                        if (!video.paused && !video.ended) {
-                                                                                            // Higher resolution (720p) and better quality
-                                                                                            canvas.width = 1280;
-                                                                                            canvas.height = 720;
-                                                                                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                                                                                            const frame = canvas.toDataURL('image/jpeg', 0.9); // 90% quality
-                                                                                            broadcastChannel.postMessage({ type: 'video-frame', data: frame });
-                                                                                        }
-                                                                                    };
-                                                                                    worker.postMessage('start');
+            // Show active panel
+            document.getElementById('activeAuctionPanel').classList.remove('d-none');
+            document.getElementById('auctionImage').src = product.image;
+            document.getElementById('auctionTitle').innerText = product.name;
+            document.getElementById('auctionPrice').innerText = '$' + product.price;
 
-                                                                                })
-                                                                                .catch(function (error) {
-                                                                                    console.error("Error accessing webcam:", error);
-                                                                                    // placeholder.innerHTML = '<i class="bi bi-exclamation-triangle fs-1 text-warning mb-2"></i><p>Camera Access Denied</p>';
-                                                                                });
-                                                                        } else {
-                                                                            // placeholder.innerHTML = '<p>Webcam not supported</p>';
-                                                                        }
-                                                                    });
+            // Start Timer
+            let timeLeft = seconds;
+            const timerDisplay = document.getElementById('auctionTimer');
 
-                                                                    function startAdminTimer() {
-                                                                        const timerDisplay = document.getElementById('adminTimer');
-                                                                        clearInterval(timerInterval);
-                                                                        timerInterval = setInterval(() => {
-                                                                            auctionTimeLeft--;
-                                                                            if (auctionTimeLeft < 0) {
-                                                                                clearInterval(timerInterval);
-                                                                                timerDisplay.innerText = "ENDED";
-                                                                                timerDisplay.classList.replace('bg-warning', 'bg-danger');
-                                                                                timerDisplay.classList.add('text-white');
-                                                                            } else {
-                                                                                const minutes = Math.floor(auctionTimeLeft / 60);
-                                                                                const seconds = auctionTimeLeft % 60;
-                                                                                timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                                                                            }
-                                                                        }, 1000);
-                                                                    }
+            const interval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerDisplay.innerText = `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
 
-                                                                    function sendAdminMessage() {
-                                                                        const input = document.getElementById('adminChatInput');
-                                                                        const box = document.getElementById('adminChatBox');
-                                                                        if (input.value.trim()) {
-                                                                            const div = document.createElement('div');
-                                                                            div.className = 'mb-2 p-2 bg-light rounded border-start border-4 border-primary';
-                                                                            div.innerHTML = `<strong>Admin:</strong> ${input.value} <span class="float-end text-muted small">Just now</span>`;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timerDisplay.innerText = "ENDED";
+                }
+                timeLeft--;
+            }, 1000);
 
-                                                                            if (box.querySelector('.text-center')) box.innerHTML = '';
-                                                                            box.appendChild(div);
-                                                                            box.scrollTop = box.scrollHeight;
-                                                                            input.value = '';
-                                                                        }
-                                                                    }
-
-                                                                    function setPinnedMessage() {
-                                                                        const message = document.getElementById('pinnedMessageInput').value;
-                                                                        fetch('/admin/live/pin', {
-                                                                            method: 'POST',
-                                                                            headers: {
-                                                                                'Content-Type': 'application/json',
-                                                                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                                                                            },
-                                                                            body: JSON.stringify({ message: message })
-                                                                        }).then(() => {
-                                                                            alert('Message pinned!');
-                                                                        });
-                                                                    }
-
-                                                                    // Simulated Chat for Demo (Admin View)
-                                                                    setInterval(() => {
-                                                                        const users = ['User123', 'Buyer99', 'ShopFan', 'Newbie'];
-                                                                        const messages = ['Is this available?', 'How much shipping?', 'Love this!', 'Can I bid?'];
-                                                                        const randomUser = users[Math.floor(Math.random() * users.length)];
-                                                                        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-
-                                                                        const box = document.getElementById('adminChatBox');
-                                                                        const div = document.createElement('div');
-                                                                        div.className = 'mb-2 p-2 bg-white rounded border shadow-sm';
-                                                                        // Add Ban Button
-                                                                        div.innerHTML = `
-                                            <div class="d-flex justify-content-between">
-                                                <strong>${randomUser}:</strong>
-                                                <button class="btn btn-xs btn-outline-danger py-0" style="font-size: 0.7rem;" onclick="banUser('${randomUser}')">Ban</button>
-                                            </div>
-                                            <div>${randomMsg}</div>
-                                        `;
-
-                                                                        if (box.querySelector('.text-center')) box.innerHTML = '';
-                                                                        box.appendChild(div);
-                                                                        box.scrollTop = box.scrollHeight;
-                                                                    }, 5000);
-
-                                                                    function banUser(username) {
-                                                                        if (confirm('Ban ' + username + '?')) {
-                                                                            // In a real app, we'd send the user ID. For demo, we just alert.
-                                                                            alert(username + ' has been banned.');
-                                                                            // fetch('/admin/live/ban', ...); 
-                                                                        }
-                                                                    }
-
-                                                                    function updateTimer(seconds) {
-                                                                        auctionTimeLeft += seconds;
-                                                                        const timerDisplay = document.getElementById('adminTimer');
-                                                                        timerDisplay.classList.replace('bg-danger', 'bg-warning');
-                                                                        if (timerDisplay.innerText === "ENDED") startAdminTimer();
-                                                                    }
-
-                                                                    function resetTimer() {
-                                                                        auctionTimeLeft = 45;
-                                                                        const timerDisplay = document.getElementById('adminTimer');
-                                                                        timerDisplay.classList.replace('bg-danger', 'bg-warning');
-                                                                        startAdminTimer();
-                                                                    }
-
-                                                                    function endAuction() {
-                                                                        auctionTimeLeft = 0;
-                                                                    }
-                                                                </script>
-                                    @endsection
+            // Notify server
+            axios.post('/live/auction/start', {
+                product_id: product.id,
+                duration: seconds
+            });
+        };
+    </script>
+@endsection
