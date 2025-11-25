@@ -10,6 +10,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Styles & Scripts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
@@ -48,13 +49,18 @@
                     </ul>
                     <div class="d-flex align-items-center gap-3">
                         @auth
-                            <a href="{{ url('/cart') }}" class="text-dark position-relative me-2">
+                            <a href="{{ route('wishlist.index') }}" class="text-danger me-2" title="My Wishlist">
+                                <i class="bi bi-heart fs-4"></i>
+                            </a>
+                            <a href="{{ route('cart.index') }}" class="text-dark position-relative me-2">
                                 <i class="bi bi-cart3 fs-4"></i>
-                                <span
-                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                    style="font-size: 0.6rem;">
-                                    0
-                                </span>
+                                @if(session('cart'))
+                                    <span
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                        style="font-size: 0.6rem;">
+                                        {{ count(session('cart')) }}
+                                    </span>
+                                @endif
                             </a>
                         @endauth
 
@@ -73,6 +79,7 @@
                                     @endif
                                     <li><a class="dropdown-item" href="{{ url('/dashboard') }}">Dashboard</a></li>
                                     <li><a class="dropdown-item" href="{{ url('/dashboard/orders') }}">My Orders</a></li>
+                                    <li><a class="dropdown-item" href="{{ url('/dashboard/settings') }}">Settings</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
@@ -103,11 +110,17 @@
                         <h5>SyncStore Hub</h5>
                         <p class="text-white-50">Automated product catalog and sales platform for seamless online and
                             live event commerce.</p>
-                        <div class="social-links mt-4">
-                            <a href="#"><i class="bi bi-facebook"></i></a>
-                            <a href="#"><i class="bi bi-twitter-x"></i></a>
-                            <a href="#"><i class="bi bi-instagram"></i></a>
-                            <a href="#"><i class="bi bi-linkedin"></i></a>
+                        <div class="social-links mt-4 d-flex gap-3">
+                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                    class="bi bi-facebook"></i></a>
+                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                    class="bi bi-twitter-x"></i></a>
+                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                    class="bi bi-instagram"></i></a>
+                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                    class="bi bi-linkedin"></i></a>
+                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                    class="bi bi-youtube"></i></a>
                         </div>
                     </div>
                     <div class="col-md-2 mb-4">

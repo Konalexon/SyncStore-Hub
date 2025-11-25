@@ -7,7 +7,7 @@
             <div class="col-lg-3 mb-4">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
-                        <h5 class="fw-bold mb-4">Filters</h5>
+                        <h5 class="fw-bold mb-4"><i class="bi bi-funnel-fill me-2"></i>Filters</h5>
 
                         <form action="{{ url('/catalog') }}" method="GET">
                             <!-- Categories -->
@@ -49,9 +49,57 @@
             <!-- Product Grid -->
             <div class="col-lg-9">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <p class="mb-0 text-secondary">Showing {{ $products->count() }} results</p>
+                    <p class="mb-0 text-secondary">Showing {{ $products->total() }} results</p>
                     <select class="form-select w-auto border-0 shadow-sm">
                         <option selected>Sort by: Featured</option>
+                        <option value="price_asc">Price: Low to High</option>
+                        <option value="price_desc">Price: High to Low</option>
+                    </select>
+                </div>
+
+                <div class="row g-4">
+                    @forelse($products as $product)
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow-sm product-card">
+                                <div class="position-relative">
+                                    <img src="{{ $product->image }}" class="card-img-top object-fit-cover"
+                                        alt="{{ $product->name }}" style="height: 200px;">
+                                    <button class="btn btn-light rounded-circle position-absolute top-0 end-0 m-2 shadow-sm"
+                                        title="Add to Wishlist">
+                                        <i class="bi bi-heart"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title fw-bold mb-0">{{ $product->name }}</h5>
+                                        <span
+                                            class="badge bg-primary rounded-pill">${{ number_format($product->price, 2) }}</span>
+                                    </div>
+                                    <p class="card-text text-muted small mb-3">{{ Str::limit($product->description, 60) }}</p>
+                                    <div class="d-grid">
+                                        <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-dark rounded-pill w-100">
+                                                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12 text-center py-5">
+                            <i class="bi bi-box-seam fs-1 text-muted mb-3"></i>
+                            <h3>No products found</h3>
+                            <p class="text-muted">Try adjusting your filters or check back later.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <div class="mt-4">
+                    {{ $products->links() }}
                 </div>
             </div>
+        </div>
+    </div>
 @endsection

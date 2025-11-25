@@ -17,25 +17,37 @@ Route::get('/', function () {
 
 use App\Http\Controllers\CatalogController;
 
-Route::get('/live/status', function () {
-    $stream = LiveStream::first();
-    return response()->json([
-        'is_active' => $stream ? $stream->is_active : false,
-        'product_id' => $stream ? $stream->product_id : null,
-    ]);
+use App\Http\Controllers\LiveController;
+
+Route::get('/live', [LiveController::class, 'index']);
+Route::get('/live/status', [LiveController::class, 'status']);
+
+// Admin Chat Routes
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::post('/live/pin', [LiveController::class, 'pinMessage']);
+    Route::post('/live/ban', [LiveController::class, 'banUser']);
+    Route::post('/live/unban', [LiveController::class, 'unbanUser']);
 });
+
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentController;
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+
+// Payment Routes
+Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
+Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
+Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
 
 Route::get('/catalog', [CatalogController::class, 'index']);
 
 Route::get('/product/{id}', function ($id) {
     $product = Product::findOrFail($id);
     return view('product', compact('product'));
-});
-
-Route::get('/live', function () {
-    $stream = LiveStream::where('is_active', true)->first();
-    $products = Product::take(5)->get(); // Featured products for sidebar
-    return view('live', compact('products', 'stream'));
 });
 
 Route::get('/fix-data', function () {
@@ -72,7 +84,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // User Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
-Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->middleware('auth');
+Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->middleware('auth')->name('dashboard.orders');
+Route::get('/dashboard/settings', [DashboardController::class, 'settings'])->middleware('auth')->name('dashboard.settings');
+Route::post('/dashboard/settings', [DashboardController::class, 'updateSettings'])->middleware('auth')->name('dashboard.settings.update');
+
+use App\Http\Controllers\WishlistController;
+Route::get('/wishlist', [WishlistController::class, 'index'])->middleware('auth')->name('wishlist.index');
+Route::post('/wishlist/toggle/{id}', [WishlistController::class, 'toggle'])->middleware('auth')->name('wishlist.toggle');
 
 // Admin Panel
 Route::middleware(['auth'])->prefix('admin')->group(function () {

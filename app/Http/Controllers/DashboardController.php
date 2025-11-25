@@ -23,4 +23,26 @@ class DashboardController extends Controller
 
         return view('dashboard.orders', compact('orders'));
     }
+
+    public function settings()
+    {
+        $user = Auth::user();
+        return view('dashboard.settings', compact('user'));
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'zip' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:255',
+        ]);
+
+        $user->update($request->only(['name', 'address', 'city', 'zip', 'country']));
+
+        return redirect()->back()->with('success', 'Profile updated successfully!');
+    }
 }

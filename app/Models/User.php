@@ -23,6 +23,11 @@ class User extends Authenticatable
         'password',
         'role',
         'wallet_balance',
+        'address',
+        'city',
+        'zip',
+        'country',
+        'is_banned',
     ];
 
     /**

@@ -5,11 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LiveStream extends Model
+class Wishlist extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'is_active', 'product_id', 'pinned_message'];
+    protected $fillable = ['user_id', 'product_id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function product()
     {
