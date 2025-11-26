@@ -2,11 +2,12 @@
 
 @section('content')
     <div class="container py-5">
-        <div class="row g-4">
-            <!-- Left Column: Video & Products -->
+        <!-- Row 1: Stream + Chat -->
+        <div class="row g-4 mb-4">
+            <!-- Left Column: Video -->
             <div class="col-lg-9">
                 <!-- Video Player Area -->
-                <div class="live-stream-container bg-black rounded-3 overflow-hidden position-relative mb-4"
+                <div class="live-stream-container bg-black rounded-3 overflow-hidden position-relative"
                     style="aspect-ratio: 16/9;">
                     @if(isset($stream) && $stream && $stream->is_active)
                         <!-- Live Badge -->
@@ -89,15 +90,51 @@
                         </div>
                     @endif
                 </div>
+            </div>
 
-                <!-- Shop Products (Moved below video) -->
+            <!-- Right Column: Chat -->
+            <div class="col-lg-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="fw-bold mb-0">Live Chat</h5>
+                    </div>
+                    <div class="card-body p-3 d-flex flex-column">
+                        <div id="chatMessages" class="flex-grow-1 overflow-auto mb-3" style="scrollbar-width: thin;">
+                            <div class="text-center text-muted small my-2">
+                                Welcome to the chat! Be nice.
+                            </div>
+                        </div>
+
+                        @auth
+                            <div class="input-group">
+                                <input type="text" id="chatInput" class="form-control border-0 bg-light"
+                                    placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                                <button class="btn btn-primary" onclick="sendMessage()">
+                                    <i class="bi bi-send-fill"></i>
+                                </button>
+                            </div>
+                        @else
+                            <div class="text-center p-2 bg-light rounded">
+                                <p class="small text-muted mb-2">Please login to chat</p>
+                                <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary w-100">Sign In</a>
+                            </div>
+                        @endauth
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2: Products -->
+        <div class="row g-4">
+            <div class="col-12">
+                <!-- Shop Products -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h3 class="fw-bold mb-0">Featured Products</h3>
                         <span class="badge bg-danger">Live Deals</span>
                     </div>
 
-                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
                         @foreach($products as $product)
                             <div class="col">
                                 <div class="card h-100 border-0 shadow-sm">
@@ -117,32 +154,6 @@
                                 </div>
                             </div>
                         @endforeach
-                    </div>
-                </div>
-
-                <!-- Chat Section (Right Column on large screens, bottom on small) -->
-            </div>
-            <div class="col-lg-3">
-                <!-- Chat Component Placeholder -->
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h5 class="fw-bold mb-0">Live Chat</h5>
-                    </div>
-                    <div class="card-body p-0 d-flex flex-column" style="height: 500px;">
-                        <div class="flex-grow-1 p-3 overflow-auto" id="chatMessages" style="background: #f8f9fa;">
-                            <!-- Chat Messages -->
-                            <div class="mb-2">
-                                <span class="fw-bold text-primary">System:</span> Welcome to the stream!
-                            </div>
-                        </div>
-                        <div class="p-3 bg-white border-top">
-                            <div class="input-group">
-                                <input type="text" id="chatInput" class="form-control" placeholder="Type a message...">
-                                <button class="btn btn-primary" onclick="sendMessage()">
-                                    <i class="bi bi-send-fill"></i>
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -180,61 +191,6 @@
                     auctionTimer.innerText = "ENDED";
                 }
             }
-        }
-                    } catch (error) {
-            console.error('Status poll error', error);
-        }
-                }, 1000);
-
-        // Bid Logic
-        window.placeBid = async function () {
-            try {
-                const response = await axios.post('/live/bid');
-                if (response.data.success) {
-                    const currentBidEl = document.getElementById('currentBid');
-                    if (currentBidEl) {
-                        currentBidEl.innerText = '$' + parseFloat(response.data.new_price).toFixed(2);
-                    }
-
-                    const btn = document.querySelector('button[onclick="placeBid()"]');
-                    if (btn) {
-                        const originalText = btn.innerHTML;
-                        btn.innerHTML = '<span class="text-white">BID PLACED!</span>';
-                        btn.classList.remove('btn-success');
-                        btn.classList.add('btn-warning');
-
-                        setTimeout(() => {
-                            btn.innerHTML = originalText;
-                            btn.classList.add('btn-success');
-                            btn.classList.remove('btn-warning');
-                        }, 1000);
-                    }
-                } else {
-                    alert(response.data.message || 'Failed to place bid');
-                }
-            } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    window.location.href = '/login';
-                } else {
-                    alert('Error placing bid');
-                }
-            }
-        };
-
-        // Add to Cart Logic
-        window.addToCart = async function (id) {
-            try {
-                const response = await axios.post(`/cart/add/${id}`);
-                window.location.reload();
-            } catch (error) {
-                alert('Error adding to cart');
-            }
-        };
-
-        // Chat Logic (Basic)
-        window.sendMessage = async function () {
-            const input = document.getElementById('chatInput');
-            const message = input.value;
             if (!message) return;
 
             try {

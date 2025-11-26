@@ -7,9 +7,17 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\GamificationService;
 
 class PaymentController extends Controller
 {
+    protected $gamificationService;
+
+    public function __construct(GamificationService $gamificationService)
+    {
+        $this->gamificationService = $gamificationService;
+    }
+
     public function index()
     {
         $cart = session()->get('cart');
@@ -66,6 +74,9 @@ class PaymentController extends Controller
         }
 
         session()->forget('cart');
+
+        // Award points
+        $this->gamificationService->addPoints(Auth::user(), 100, 'purchase');
 
         return redirect()->route('payment.success')->with('order_id', $order->id);
     }

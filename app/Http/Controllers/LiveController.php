@@ -7,17 +7,21 @@ use App\Models\LiveStream;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Services\GamificationService;
 
 class LiveController extends Controller
 {
+    protected $gamificationService;
+
+    public function __construct(GamificationService $gamificationService)
+    {
+        $this->gamificationService = $gamificationService;
+    }
+
     // Public: List all active streams or show the lobby
     public function index()
     {
         $activeStreams = LiveStream::where('is_active', true)->with('user')->get();
-
-        // If only one stream is active, redirect to it (optional, but good UX)
-        // For now, let's just pass them to the view.
-
         return view('live.index', compact('activeStreams'));
     }
 
@@ -51,6 +55,7 @@ class LiveController extends Controller
             'pinned_message' => $stream ? $stream->pinned_message : null,
             'is_banned' => $user ? $user->is_banned : false,
             'host_name' => $stream && $stream->user ? $stream->user->name : 'System',
+            'user_points' => $user ? $user->points : 0 // Return user points for UI
         ]);
     }
 
@@ -118,10 +123,14 @@ class LiveController extends Controller
 
         $product->update(['price' => $newPrice]);
 
+        // Award points for bidding
+        $this->gamificationService->addPoints($user, 5, 'place_bid');
+
         return response()->json([
             'success' => true,
             'new_price' => $newPrice,
-            'user' => $user->name
+            'user' => $user->name,
+            'points' => $user->points
         ]);
     }
 

@@ -28,6 +28,7 @@ class User extends Authenticatable
         'zip',
         'country',
         'is_banned',
+        'points',
     ];
 
     /**
@@ -68,5 +69,10 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->role === 'admin';
+    }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges')->withPivot('awarded_at');
     }
 }

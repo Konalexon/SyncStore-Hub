@@ -132,3 +132,8 @@ Route::get('/contact', function () {
 });
 
 
+
+// Analytics Routes
+Route::post('/analytics/viewers/{stream}', [App\Http\Controllers\AnalyticsController::class, 'recordViewerCount']);
+Route::post('/analytics/click/{stream}', [App\Http\Controllers\AnalyticsController::class, 'recordClick']);
+Route::get('/analytics/stats/{stream}', [App\Http\Controllers\AnalyticsController::class, 'getStats']);

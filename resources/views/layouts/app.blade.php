@@ -150,12 +150,225 @@
                         </form>
                     </div>
                 </div>
-                <div class="copyright">
-                    &copy; {{ date('Y') }} SyncStore Hub. All rights reserved.
-                </div>
-            </div>
-        </footer>
-    </div>
-</body>
+                <!DOCTYPE html>
+                <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-</html>
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <title>{{ config('app.name', 'SyncStore Hub') }}</title>
+
+                    <!-- CSRF Token -->
+                    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+                    <!-- Styles & Scripts -->
+                    <link rel="stylesheet"
+                        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+                    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+                </head>
+
+                <body>
+                    <div id="app">
+                        <!-- Navbar -->
+                        <nav class="navbar navbar-expand-lg sticky-top">
+                            <div class="container">
+                                <a class="navbar-brand" href="{{ url('/') }}">
+                                    <i class="bi bi-box-seam-fill"></i> SyncStore Hub
+                                </a>
+                                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#navbarNav">
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>
+                                <div class="collapse navbar-collapse" id="navbarNav">
+                                    <ul class="navbar-nav mx-auto">
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ request()->is('/') ? 'active' : '' }}"
+                                                href="{{ url('/') }}">Home</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ request()->is('catalog') ? 'active' : '' }}"
+                                                href="{{ url('/catalog') }}">Catalog</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ request()->is('live') ? 'active' : '' }}"
+                                                href="{{ url('/live') }}">Live Shop</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ request()->is('about') ? 'active' : '' }}"
+                                                href="{{ url('/about') }}">About</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ request()->is('contact') ? 'active' : '' }}"
+                                                href="{{ url('/contact') }}">Contact</a>
+                                        </li>
+                                    </ul>
+                                    <div class="d-flex align-items-center gap-3">
+                                        @auth
+                                            <a href="{{ route('wishlist.index') }}" class="text-danger me-2"
+                                                title="My Wishlist">
+                                                <i class="bi bi-heart fs-4"></i>
+                                            </a>
+                                            <a href="{{ route('cart.index') }}" class="text-dark position-relative me-2">
+                                                <i class="bi bi-cart3 fs-4"></i>
+                                                @if(session('cart'))
+                                                    <span
+                                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count-badge"
+                                                        style="font-size: 0.6rem;">
+                                                        {{ collect(session('cart'))->sum('quantity') }}
+                                                    </span>
+                                                @endif
+                                            </a>
+                                        @endauth
+
+                                        @guest
+                                            <a href="{{ route('login') }}"
+                                                class="btn btn-outline-primary rounded-pill px-4">Sign In</a>
+                                            <a href="{{ route('register') }}" class="btn btn-primary rounded-pill px-4">Sign
+                                                Up</a>
+                                        @else
+                                            <div class="dropdown">
+                                                <a class="btn btn-light dropdown-toggle rounded-pill px-3" href="#"
+                                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-person-circle me-1"></i> {{ Auth::user()->name }}
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                                                    @if(Auth::user()->isAdmin())
+                                                        <li><a class="dropdown-item" href="{{ url('/admin/dashboard') }}">Admin
+                                                                Panel</a></li>
+                                                    @endif
+                                                    <li><a class="dropdown-item"
+                                                            href="{{ url('/dashboard') }}">Dashboard</a></li>
+                                                    <li><a class="dropdown-item" href="{{ url('/dashboard/orders') }}">My
+                                                            Orders</a></li>
+                                                    <li><a class="dropdown-item"
+                                                            href="{{ url('/dashboard/settings') }}">Settings</a></li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
+                                                    <li>
+                                                        <form action="{{ route('logout') }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit"
+                                                                class="dropdown-item text-danger">Logout</button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        @endguest
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+
+                        <!-- Main Content -->
+                        <main>
+                            @yield('content')
+                        </main>
+
+                        <!-- Footer -->
+                        <footer class="footer">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4 mb-4">
+                                        <h5>SyncStore Hub</h5>
+                                        <p class="text-white-50">Automated product catalog and sales platform for
+                                            seamless online and
+                                            live event commerce.</p>
+                                        <div class="social-links mt-4 d-flex gap-3">
+                                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                                    class="bi bi-facebook"></i></a>
+                                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                                    class="bi bi-twitter-x"></i></a>
+                                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                                    class="bi bi-instagram"></i></a>
+                                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                                    class="bi bi-linkedin"></i></a>
+                                            <a href="#" class="text-white-50 text-decoration-none fs-5"><i
+                                                    class="bi bi-youtube"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 mb-4">
+                                        <h5>Platform</h5>
+                                        <ul>
+                                            <li><a href="#">Features</a></li>
+                                            <li><a href="#">Pricing</a></li>
+                                            <li><a href="#">Integrations</a></li>
+                                            <li><a href="#">Live Events</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-2 mb-4">
+                                        <h5>Company</h5>
+                                        <ul>
+                                            <li><a href="{{ url('/about') }}">About Us</a></li>
+                                            <li><a href="#">Careers</a></li>
+                                            <li><a href="#">Blog</a></li>
+                                            <li><a href="{{ url('/contact') }}">Contact</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4 mb-4">
+                                        <h5>Newsletter</h5>
+                                        <p class="text-white-50 mb-3">Subscribe to get the latest updates and news.</p>
+                                        <form class="d-flex gap-2">
+                                            <input type="email" class="form-control" placeholder="Enter your email">
+                                            <button class="btn btn-primary">Subscribe</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="copyright">
+                                    &copy; {{ date('Y') }} SyncStore Hub. All rights reserved.
+                                </div>
+                            </div>
+                        </footer>
+                    </div>
+                    <!-- Picture-in-Picture Mini Player -->
+                    <div id="pip-container"
+                        class="position-fixed bottom-0 end-0 m-4 bg-black rounded-3 shadow-lg overflow-hidden d-none"
+                        style="width: 320px; aspect-ratio: 16/9; z-index: 9999; border: 2px solid rgba(255,255,255,0.1); transition: all 0.3s ease;">
+
+                        <!-- Header/Controls -->
+                        <div class="position-absolute top-0 start-0 w-100 p-2 d-flex justify-content-between align-items-center z-2"
+                            style="background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);">
+                            <span class="badge bg-danger animate-pulse"><i class="bi bi-circle-fill small me-1"></i>
+                                LIVE</span>
+                            <div>
+                                <a href="{{ url('/live') }}"
+                                    class="btn btn-sm btn-dark bg-opacity-50 border-0 text-white me-1" title="Expand">
+                                    <i class="bi bi-arrows-angle-expand"></i>
+                                </a>
+                                <button onclick="document.getElementById('pip-container').remove()"
+                                    class="btn btn-sm btn-dark bg-opacity-50 border-0 text-white" title="Close">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Video Canvas -->
+                        <canvas id="pipCanvas" class="w-100 h-100 object-fit-cover"></canvas>
+                    </div>
+
+                    <!-- PiP Logic -->
+                    <script type="module">
+                        import { StreamReceiver } from '/js/stream-simulation.js';
+
+                        const pipContainer = document.getElementById('pip-container');
+                        const pipCanvas = document.getElementById('pipCanvas');
+
+                        // Only activate PiP if we are NOT on the main live page
+                        if (!window.location.pathname.includes('/live')) {
+                            StreamReceiver.init(pipCanvas, null);
+
+                            // Listen for stream status to toggle visibility
+                            const channel = new BroadcastChannel('syncstore_live_stream');
+                            channel.onmessage = (event) => {
+                                const { type, status } = event.data;
+                                if (type === 'frame') {
+                                    pipContainer.classList.remove('d-none');
+                                } else if (type === 'status' && status === 'offline') {
+                                    pipContainer.classList.add('d-none');
+                                }
+                            };
+                        }
+                    </script>
+                </body>
+
+                </html>
