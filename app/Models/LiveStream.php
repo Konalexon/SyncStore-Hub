@@ -9,7 +9,12 @@ class LiveStream extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'is_active', 'product_id', 'pinned_message', 'auction_end_time'];
+    protected $fillable = ['user_id', 'title', 'is_active', 'product_id', 'pinned_message', 'auction_end_time'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function product()
     {

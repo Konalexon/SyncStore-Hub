@@ -20,8 +20,9 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\LiveController;
 
 // Live Stream Routes
-Route::get('/live', [LiveController::class, 'index']);
+Route::get('/live', [LiveController::class, 'index'])->name('live.index');
 Route::get('/live/status', [LiveController::class, 'status']);
+Route::get('/live/{id}', [LiveController::class, 'show'])->name('live.show');
 
 // Chat Routes
 use App\Http\Controllers\ChatController;

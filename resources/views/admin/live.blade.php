@@ -150,40 +150,23 @@
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 video.srcObject = stream;
-                video.classList.remove('d-none');
-                placeholder.classList.add('d-none');
-                startBtn.classList.add('d-none');
-                stopBtn.classList.remove('d-none');
-                liveIndicator.classList.remove('d-none');
+                const stream = video.srcObject;
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+                video.srcObject = null;
 
-                // Start Broadcasting Frames
-                StreamBroadcaster.start(video);
+                video.classList.add('d-none');
+                placeholder.classList.remove('d-none');
+                startBtn.classList.remove('d-none');
+                stopBtn.classList.add('d-none');
+                liveIndicator.classList.add('d-none');
+
+                // Stop Broadcasting
+                StreamBroadcaster.stop();
 
                 // Notify server
-                axios.post('/admin/live/start');
-            } catch (err) {
-                alert('Error accessing webcam: ' + err.message);
-            }
-        });
-
-        stopBtn.addEventListener('click', () => {
-            const stream = video.srcObject;
-            const tracks = stream.getTracks();
-            tracks.forEach(track => track.stop());
-            video.srcObject = null;
-
-            video.classList.add('d-none');
-            placeholder.classList.remove('d-none');
-            startBtn.classList.remove('d-none');
-            stopBtn.classList.add('d-none');
-            liveIndicator.classList.add('d-none');
-
-            // Stop Broadcasting
-            StreamBroadcaster.stop();
-
-            // Notify server
-            axios.post('/admin/live/stop');
-        });
+                axios.post('/admin/live/stop');
+            });
 
         // Auction Logic
         window.setTimer = function (seconds) {

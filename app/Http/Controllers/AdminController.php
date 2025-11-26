@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\LiveStream;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -78,17 +79,19 @@ class AdminController extends Controller
 
     public function live()
     {
-        $stream = LiveStream::first();
+        $user = Auth::user();
+        $stream = LiveStream::where('user_id', $user->id)->first();
         $products = Product::all();
         return view('admin.live', compact('stream', 'products'));
     }
 
     public function toggleLive(Request $request)
     {
-        $stream = LiveStream::first();
-        if (!$stream) {
-            $stream = LiveStream::create(['title' => 'Main Stream', 'is_active' => false]);
-        }
+        $user = Auth::user();
+        $stream = LiveStream::firstOrCreate(
+            ['user_id' => $user->id],
+            ['title' => $user->name . "'s Stream"]
+        );
 
         $stream->update([
             'is_active' => !$stream->is_active,

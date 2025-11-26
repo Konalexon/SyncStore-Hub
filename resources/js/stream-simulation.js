@@ -4,11 +4,14 @@
  * Note: This is for local simulation only. Production would use WebRTC/HLS.
  */
 
-const streamChannel = new BroadcastChannel('syncstore_live_stream');
-
 export const StreamBroadcaster = {
-    start(videoElement) {
-        if (!videoElement) return;
+    channel: null,
+    interval: null,
+
+    start(videoElement, streamId) {
+        if (!videoElement || !streamId) return;
+
+        this.channel = new BroadcastChannel(`syncstore_live_stream_${streamId}`);
 
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -25,7 +28,7 @@ export const StreamBroadcaster = {
             const frame = canvas.toDataURL('image/jpeg', 0.4);
 
             try {
-                streamChannel.postMessage({ type: 'frame', data: frame });
+                this.channel.postMessage({ type: 'frame', data: frame });
             } catch (e) {
                 // Ignore channel full errors
             }
@@ -34,17 +37,24 @@ export const StreamBroadcaster = {
 
     stop() {
         if (this.interval) clearInterval(this.interval);
-        streamChannel.postMessage({ type: 'status', status: 'offline' });
+        if (this.channel) {
+            this.channel.postMessage({ type: 'status', status: 'offline' });
+            this.channel.close();
+            this.channel = null;
+        }
     }
 };
 
 export const StreamReceiver = {
-    init(canvasElement, loadingElement) {
-        if (!canvasElement) return;
+    channel: null,
 
+    init(canvasElement, loadingElement, streamId) {
+        if (!canvasElement || !streamId) return;
+
+        this.channel = new BroadcastChannel(`syncstore_live_stream_${streamId}`);
         const ctx = canvasElement.getContext('2d');
 
-        streamChannel.onmessage = (event) => {
+        this.channel.onmessage = (event) => {
             const { type, data, status } = event.data;
 
             if (type === 'frame') {

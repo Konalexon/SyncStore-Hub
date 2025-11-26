@@ -120,6 +120,13 @@ We are constantly evolving. Here is what's next for SyncStore-Hub:
 - [x] **AI Chatbot**: An automated moderator that answers FAQs about products during the stream.
 - [x] **Multi-Host Support**: Allowing multiple streamers to broadcast simultaneously on different channels.
 
+### Phase 4: Future Horizons (Planned) 🔮
+- [ ] **Gamification**: Points system, leaderboards, and badges to incentivize viewer engagement.
+- [ ] **Advanced Analytics**: Live viewer graphs, conversion tracking, and chat heatmaps for hosts.
+- [ ] **Smart AI Assistant**: Context-aware shopping assistant powered by LLMs (Gemini/OpenAI).
+- [ ] **Social Features**: Host subscriptions, follow notifications, and social sharing.
+- [ ] **Picture-in-Picture**: Browse the catalog while keeping the stream visible in a floating window.
+
 ---
 
 <div align="center">
