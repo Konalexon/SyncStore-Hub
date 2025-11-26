@@ -20,6 +20,9 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\LiveController;
 
 // Live Stream Routes
+Route::get('/live', [LiveController::class, 'index']);
+Route::get('/live/status', [LiveController::class, 'status']);
+
 // Chat Routes
 use App\Http\Controllers\ChatController;
 
@@ -126,3 +129,5 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return view('contact');
 });
+
+

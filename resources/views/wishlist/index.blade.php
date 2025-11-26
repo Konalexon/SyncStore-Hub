@@ -26,15 +26,16 @@
                                     </button>
                                 </form>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body d-flex flex-column">
                                 <h5 class="card-title fw-bold text-truncate">{{ $item->product->name }}</h5>
-                                <p class="card-text text-muted small text-truncate">{{ $item->product->description }}</p>
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <span class="fw-bold text-primary">${{ number_format($item->product->price, 2) }}</span>
-                                    <a href="{{ url('/add-to-cart/' . $item->product->id) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-cart-plus"></i> Add
-                                    </a>
+                                <p class="card-text text-muted small mb-3">{{ Str::limit($item->product->description, 60) }}</p>
+                                <div class="mt-auto d-grid">
+                                    <form action="{{ route('cart.add', $item->product->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline-dark rounded-pill w-100">
+                                            <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

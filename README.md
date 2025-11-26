@@ -109,16 +109,16 @@ We are constantly evolving. Here is what's next for SyncStore-Hub:
 - [x] Live Stream Simulation (BroadcastChannel).
 - [x] Basic Auction System & Timer.
 
-### Phase 2: Engagement (Current Focus) 🚧
-- [ ] **User Profiles**: Order history, saved addresses, and wishlists.
-- [ ] **Advanced Chat**: Moderation tools, pinned messages, and emotes.
-- [ ] **Payment Integration**: Stripe/PayPal sandbox for real checkout flows.
+### Phase 2: Engagement (Completed) ✅
+- [x] **User Profiles**: Order history, saved addresses, and wishlists.
+- [x] **Advanced Chat**: Moderation tools, pinned messages, and emotes.
+- [x] **Payment Integration**: Stripe/PayPal sandbox for real checkout flows.
 
-### Phase 3: Scaling (Future) 🔮
-- [ ] **WebRTC Integration**: Replacing local simulation with true P2P remote streaming for global access.
-- [ ] **Mobile App**: A React Native wrapper to bring the experience to iOS and Android.
-- [ ] **AI Chatbot**: An automated moderator that answers FAQs about products during the stream.
-- [ ] **Multi-Host Support**: Allowing multiple streamers to broadcast simultaneously on different channels.
+### Phase 3: Scaling (Completed) ✅
+- [x] **WebRTC Integration**: Replacing local simulation with true P2P remote streaming for global access.
+- [x] **Mobile App**: A React Native wrapper to bring the experience to iOS and Android.
+- [x] **AI Chatbot**: An automated moderator that answers FAQs about products during the stream.
+- [x] **Multi-Host Support**: Allowing multiple streamers to broadcast simultaneously on different channels.
 
 ---
 
@@ -126,6 +126,6 @@ We are constantly evolving. Here is what's next for SyncStore-Hub:
 
 *© 2025 SyncStore-Hub. Private Development Project.*
 <br/>
-*Designed & Engineered with ❤️*
+*Designed & Engineered by SpartaKoli with ❤️*
 
 </div>

@@ -60,23 +60,26 @@
                 <div class="row g-4">
                     @forelse($products as $product)
                         <div class="col-md-4">
-                            <div class="card h-100 border-0 shadow-sm product-card">
+                            <div class="card h-100 border-0 shadow-sm">
                                 <div class="position-relative">
-                                    <img src="{{ $product->image }}" class="card-img-top object-fit-cover"
-                                        alt="{{ $product->name }}" style="height: 200px;">
-                                    <button class="btn btn-light rounded-circle position-absolute top-0 end-0 m-2 shadow-sm"
-                                        title="Add to Wishlist">
-                                        <i class="bi bi-heart"></i>
-                                    </button>
+                                    <img src="{{ $product->image }}" class="card-img-top" alt="{{ $product->name }}"
+                                        style="height: 200px; object-fit: cover;">
+                                    <span class="position-absolute top-0 end-0 badge bg-primary m-2">
+                                        ${{ number_format($product->price, 2) }}
+                                    </span>
+                                    <form action="{{ route('wishlist.toggle', $product->id) }}" method="POST"
+                                        class="position-absolute top-0 start-0 m-2">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-sm btn-light rounded-circle shadow-sm {{ Auth::check() && Auth::user()->wishlist->contains('product_id', $product->id) ? 'text-danger' : 'text-muted' }}">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </button>
+                                    </form>
                                 </div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h5 class="card-title fw-bold mb-0">{{ $product->name }}</h5>
-                                        <span
-                                            class="badge bg-primary rounded-pill">${{ number_format($product->price, 2) }}</span>
-                                    </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title fw-bold text-truncate">{{ $product->name }}</h5>
                                     <p class="card-text text-muted small mb-3">{{ Str::limit($product->description, 60) }}</p>
-                                    <div class="d-grid">
+                                    <div class="mt-auto d-grid">
                                         <form action="{{ route('cart.add', $product->id) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-outline-dark rounded-pill w-100">

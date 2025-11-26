@@ -9,7 +9,7 @@ class LiveStream extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'is_active', 'product_id', 'pinned_message'];
+    protected $fillable = ['title', 'is_active', 'product_id', 'pinned_message', 'auction_end_time'];
 
     public function product()
     {

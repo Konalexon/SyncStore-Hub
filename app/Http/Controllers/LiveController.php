@@ -21,13 +21,17 @@ class LiveController extends Controller
 
     public function status()
     {
-        $stream = LiveStream::first();
+        $stream = LiveStream::where('is_active', true)->first();
+        if (!$stream) {
+            $stream = LiveStream::first(); // Fallback to any stream if no active one, to show offline status correctly
+        }
         $user = Auth::user();
 
         return response()->json([
             'is_active' => $stream ? $stream->is_active : false,
             'product_id' => $stream ? $stream->product_id : null,
             'product' => $stream && $stream->product ? $stream->product : null,
+            'auction_end_time' => $stream ? $stream->auction_end_time : null,
             'pinned_message' => $stream ? $stream->pinned_message : null,
             'is_banned' => $user ? $user->is_banned : false,
         ]);
@@ -59,7 +63,7 @@ class LiveController extends Controller
         if ($stream) {
             $stream->update([
                 'product_id' => $request->product_id,
-                // In a real app, we'd store auction end time etc.
+                'auction_end_time' => now()->addSeconds($request->duration)
             ]);
         }
         return response()->json(['success' => true]);

@@ -118,89 +118,174 @@
                             </div>
                         @endforeach
                     </div>
+                </div>
 
-                    @keyframes fadeOutLeft {
-                    to {
-                    opacity: 0;
-                    transform: translateX(-100%);
+                <!-- Chat Section (Right Column on large screens, bottom on small) -->
+            </div>
+            <div class="col-lg-3">
+                <!-- Chat Component Placeholder -->
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="fw-bold mb-0">Live Chat</h5>
+                    </div>
+                    <div class="card-body p-0 d-flex flex-column" style="height: 500px;">
+                        <div class="flex-grow-1 p-3 overflow-auto" id="chatMessages" style="background: #f8f9fa;">
+                            <!-- Chat Messages -->
+                            <div class="mb-2">
+                                <span class="fw-bold text-primary">System:</span> Welcome to the stream!
+                            </div>
+                        </div>
+                        <div class="p-3 bg-white border-top">
+                            <div class="input-group">
+                                <input type="text" id="chatInput" class="form-control" placeholder="Type a message...">
+                                <button class="btn btn-primary" onclick="sendMessage()">
+                                        <i class="bi bi-send-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="module">
+            import { StreamReceiver } from '/js/stream-simulation.js';
+
+            const canvas = document.getElementById('streamCanvas');
+            const loading = document.getElementById('videoPlaceholder');
+            const viewerCount = document.getElementById('viewerCount');
+            const auctionTimer = document.getElementById('auctionTimer');
+            let auctionInterval;
+
+            // Initialize Stream Receiver
+            if (canvas) {
+                StreamReceiver.init(canvas, loading);
+            }
+
+            // Polling for Status Updates
+            setInterval(async () => {
+                try {
+                    const response = await axios.get('/live/status');
+                    const data = response.data;
+
+                    // Update Viewer Count
+                    if (viewerCount) {
+                        viewerCount.innerText = Math.floor(Math.random() * 50) + 10;
                     }
+
+                    // Update Auction Info
+                    if (data.product) {
+                        const currentBidEl = document.getElementById('currentBid');
+                        if (currentBidEl) {
+                            currentBidEl.innerText = '$' + parseFloat(data.product.price).toFixed(2);
+                        }
+
+                        // Sync Timer
+                        if (data.auction_end_time && auctionTimer) {
+                            const endTime = new Date(data.auction_end_time).getTime();
+                            const now = new Date().getTime();
+                            const distance = endTime - now;
+
+                            if (distance > 0) {
+                                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                                auctionTimer.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                            } else {
+                                auctionTimer.innerText = "ENDED";
+                            }
+                        }
                     }
-                    </style>
-                    <script type="module">
-                        import { StreamReceiver } from '/resources/js/stream-simulation.js';
+                } catch (error) {
+                    console.error('Status poll error', error);
+                }
+            }, 1000);
 
-                        const canvas = document.getElementById('streamCanvas');
-                        const loading = document.getElementById('videoPlaceholder');
-                        const viewerCount = document.getElementById('viewerCount');
+            // Bid Logic
+            window.placeBid = async function() {
+                try {
+                    const response = await axios.post('/live/bid');
+                    if (response.data.success) {
+                        const currentBidEl = document.getElementById('currentBid');
+                        if (currentBidEl) {
+                            currentBidEl.innerText = '$' + parseFloat(response.data.new_price).toFixed(2);
+                        }
 
-                        // Initialize Stream Receiver
-                        StreamReceiver.init(canvas, loading);
+                        const btn = document.querySelector('button[onclick="placeBid()"]');
+                        if (btn) {
+                            const originalText = btn.innerHTML;
+                            btn.innerHTML = '<span class="text-white">BID PLACED!</span>';
+                            btn.classList.remove('btn-success');
+                            btn.classList.add('btn-warning');
 
-                        // Polling for Status Updates (Viewer Count, Auction Status)
-                        setInterval(async () => {
-                            try {
-                                const response = await axios.get('/live/status');
-                                const data = response.data;
+                            setTimeout(() => {
+                                btn.innerHTML = originalText;
+                                btn.classList.add('btn-success');
+                                btn.classList.remove('btn-warning');
+                            }, 1000);
+                        }
+                    } else {
+                        alert(response.data.message || 'Failed to place bid');
+                    }
+                } catch (error) {
+                    if (error.response && error.response.status === 401) {
+                        window.location.href = '/login';
+                    } else {
+                        alert('Error placing bid');
+                    }
+                }
+            };
 
-                                // Update Viewer Count (Simulated)
-                                viewerCount.innerText = Math.floor(Math.random() * 50) + 10;
+            // Add to Cart Logic
+            window.addToCart = async function(id) {
+                try {
+                    const response = await axios.post(`/cart/add/${id}`);
+                    window.location.reload(); 
+                } catch (error) {
+                    alert('Error adding to cart');
+                }
+            };
 
-                                // Update Auction Info if active
-                                if (data.product) {
-                                    const currentBidEl = document.getElementById('currentBid');
-                                    if (currentBidEl) {
-                                        currentBidEl.innerText = '$' + parseFloat(data.product.price).toFixed(2);
-                                    }
-                                }
-                            } catch (error) {
-                                console.error('Status poll error', error);
-                            }
-                        }, 3000);
+            // Chat Logic (Basic)
+            window.sendMessage = async function() {
+                const input = document.getElementById('chatInput');
+                const message = input.value;
+                if (!message) return;
 
-                        // Bid Logic
-                        window.placeBid = async function () {
-                            try {
-                                const response = await axios.post('/live/bid');
-                                if (response.data.success) {
-                                    // Update UI immediately for better UX
-                                    const currentBidEl = document.getElementById('currentBid');
-                                    if (currentBidEl) {
-                                        currentBidEl.innerText = '$' + parseFloat(response.data.new_price).toFixed(2);
-                                    }
+                try {
+                    // Ensure CSRF token is sent
+                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    const response = await axios.post('/chat/send', { message }, {
+                        headers: {
+                            'X-CSRF-TOKEN': token
+                        }
+                    });
 
-                                    // Show success toast/notification (simplified)
-                                    const btn = document.querySelector('button[onclick="placeBid()"]');
-                                    const originalText = btn.innerHTML;
-                                    btn.innerHTML = '<span class="text-white">BID PLACED!</span>';
-                                    btn.classList.remove('btn-success');
-                                    btn.classList.add('btn-warning');
+                    if (response.data.success) {
+                        const chatBox = document.getElementById('chatMessages');
+                        const msgDiv = document.createElement('div');
+                        msgDiv.className = 'mb-2';
+                        msgDiv.innerHTML = `<span class="fw-bold text-primary">${response.data.user}:</span> ${response.data.message}`;
+                        chatBox.appendChild(msgDiv);
 
-                                    setTimeout(() => {
-                                        btn.innerHTML = originalText;
-                                        btn.classList.add('btn-success');
-                                        btn.classList.remove('btn-warning');
-                                    }, 1000);
-                                } else {
-                                    alert(response.data.message || 'Failed to place bid');
-                                }
-                            } catch (error) {
-                                if (error.response && error.response.status === 401) {
-                                    window.location.href = '/login';
-                                } else {
-                                    alert('Error placing bid');
-                                }
-                            }
-                        };
+                        if (response.data.bot_reply) {
+                            const botDiv = document.createElement('div');
+                            botDiv.className = 'mb-2';
+                            botDiv.innerHTML = `<span class="fw-bold text-success">AI Assistant:</span> ${response.data.bot_reply.message}`;
+                            chatBox.appendChild(botDiv);
+                        }
 
-                        // Add to Cart Logic
-                        window.addToCart = async function (id) {
-                            try {
-                                const response = await axios.post(`/cart/add/${id}`);
-                                // Simple toast or reload
-                                window.location.reload();
-                            } catch (error) {
-                                alert('Error adding to cart');
-                            }
-                        };
-                    </script>
+                        input.value = '';
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                } catch (error) {
+                    console.error('Chat error:', error);
+                    if (error.response && error.response.status === 403) {
+                        alert('You are banned from chat.');
+                    } else {
+                        alert('Error sending message');
+                    }
+                }
+            };
+        </script>
 @endsection
