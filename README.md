@@ -63,17 +63,11 @@ This isn't just a shop; it's a **broadcast network for commerce**.
 
 <div align="center">
 
-### The Command Center
-*A powerful dashboard for hosts to manage the stream, chat, and auctions in real-time.*
-
-![Admin Dashboard](file:///C:/Users/konal/.gemini/antigravity/brain/795c4926-64bd-444d-81f3-7b4de33e180c/admin_live_active_product_retry_1764027636987.png)
+![Login Page](public/assets/screenshots/login_page.jpg)
 
 <br/>
 
-### Discovery & Exploration
-*An immersive catalog experience with smart filters and dynamic layouts.*
-
-![Catalog](file:///C:/Users/konal/.gemini/antigravity/brain/795c4926-64bd-444d-81f3-7b4de33e180c/catalog_verified_final_1764019789271.png)
+![Shop Live](public/assets/screenshots/Shop_Live.jpg)
 
 </div>
 
