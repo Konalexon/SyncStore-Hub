@@ -61,15 +61,11 @@ This isn't just a shop; it's a **broadcast network for commerce**.
 
 ## 📸 Visual Gallery
 
-<div align="center">
+### LoginPage
+![LoginPage](public/assets/screenshots/login_page.jpg)
 
-![Login Page](public/assets/screenshots/login_page.jpg)
-
-<br/>
-
-![Shop Live](public/assets/screenshots/Shop_Live.jpg)
-
-</div>
+### ShopLive
+![ShopLive](public/assets/screenshots/Shop_Live.png)
 
 ---
 
