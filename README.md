@@ -56,6 +56,11 @@ This isn't just a shop; it's a **broadcast network for commerce**.
 
 <div align="center">
 
+### Home Page
+*The landing page of the future of commerce.*
+
+![Home](public/screenshots/home.png)
+
 ### Login/Signup Page
 *The login and signup page. The user can login or signup to access the platform.*
 
@@ -77,10 +82,20 @@ This isn't just a shop; it's a **broadcast network for commerce**.
 
 <br/>
 
-### Home Page
-*The landing page of the future of commerce.*
+### Admin Dashboard
+*The command center for managing the entire platform.*
 
-![Home](public/screenshots/home.png)
+![Admin Dashboard](public/screenshots/admin_dashboard.png)
+
+### Manage Products
+*Easily add, edit, and manage your inventory.*
+
+![Admin Products](public/screenshots/admin_products.png)
+
+### Live Control Room
+*Monitor and control your live streams in real-time.*
+
+![Admin Live Control](public/screenshots/admin_live_control.png)
 
 </div>
 
