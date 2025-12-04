@@ -53,7 +53,6 @@ This isn't just a shop; it's a **broadcast network for commerce**.
 *   **Thrill of the Hunt**: Participate in limited-time auctions with live countdowns that create a genuine sense of urgency.
 
 #### 🎬 For the Host (The Admin)
-*   **Total Control**: A "Mission Control" style dashboard that gives you a live feed of your camera, chat, and active inventory.
 *   **AI Copilot**: Don't know what to write? Our **Magic AI** generates professional product descriptions and pricing strategies on the fly.
 *   **Audience Interaction**: Highlight products on the screen with a single click, pushing them to every viewer's device instantly.
 
