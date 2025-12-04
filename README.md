@@ -56,10 +56,10 @@ This isn't just a shop; it's a **broadcast network for commerce**.
 
 <div align="center">
 
-### The Command Center
-*A powerful dashboard for hosts to manage the stream, chat, and auctions in real-time.*
+### Login/Signup Page
+*The login and signup page. The user can login or signup to access the platform.*
 
-![Admin Login](public/screenshots/login.png)
+![Login/Signup Page](public/screenshots/login.png)
 
 <br/>
 
