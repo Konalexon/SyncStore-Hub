@@ -14,12 +14,6 @@
 
 [Explore Features](#-key-features) • [View Gallery](#-visual-gallery) • [Tech Stack](#-technology-stack) • [Roadmap](#-development-roadmap)
 
-<br />
-
-![Live Shop Experience](public/screenshots/live.png)
-
-</div>
-
 ---
 
 ## 💎 Project Vision
