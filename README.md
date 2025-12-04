@@ -16,7 +16,7 @@
 
 <br />
 
-![Live Shop Experience](file:///C:/Users/konal/.gemini/antigravity/brain/795c4926-64bd-444d-81f3-7b4de33e180c/live_page_fixed_1764028113701.png)
+![Live Shop Experience](public/screenshots/live.png)
 
 </div>
 
@@ -66,14 +66,28 @@ This isn't just a shop; it's a **broadcast network for commerce**.
 ### The Command Center
 *A powerful dashboard for hosts to manage the stream, chat, and auctions in real-time.*
 
-![Admin Dashboard](file:///C:/Users/konal/.gemini/antigravity/brain/795c4926-64bd-444d-81f3-7b4de33e180c/admin_live_active_product_retry_1764027636987.png)
+![Admin Login](public/screenshots/login.png)
 
 <br/>
 
 ### Discovery & Exploration
 *An immersive catalog experience with smart filters and dynamic layouts.*
 
-![Catalog](file:///C:/Users/konal/.gemini/antigravity/brain/795c4926-64bd-444d-81f3-7b4de33e180c/catalog_verified_final_1764019789271.png)
+![Catalog](public/screenshots/catalog.png)
+
+<br/>
+
+### Live Experience
+*Real-time shopping with interactive video and chat.*
+
+![Live Shop](public/screenshots/live.png)
+
+<br/>
+
+### Home Page
+*The landing page of the future of commerce.*
+
+![Home](public/screenshots/home.png)
 
 </div>
 
